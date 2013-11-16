@@ -1,0 +1,278 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+
+  <head>
+
+    <title>Canvolver - Canvas image evolver</title>
+
+    <style type="text/css">
+
+      body                         { margin: 0 2em; background-color: #eee; }
+
+      #cloneframe,
+      #cloneframe2,
+      #breedframe1,
+      #breedframe2,
+      #imgframe,
+      #controlframe                { display: inline-block; border: 1px solid black; margin-top: 2em; position: relative; vertical-align: top; margin-right: 2em; }
+
+      .framelabel                  { position: absolute; top: -1.4em; }
+
+      canvas, img                  { vertical-align: bottom; }
+
+      #controlframe                { margin: inherit 1em 1em 0; background-color: white; }
+      #controlpanel                { padding: 1em; font-size: 80%; line-height: 110%; }
+      #controlpanel *              { line-height: 110%; padding: 0; margin: 0; }
+
+      #controlpanel table          { border-collapse: collapse; margin: 0.5em auto 0 auto; }
+      #controlpanel table td       { text-align: right; padding: 0 0 0.2em 0.5em; }
+      #controlpanel td.rcol        { text-align: left; }
+
+      #controlpanel input          { width: 3em; }
+
+      #controlpanel #onegen,
+      #controlpanel #reset         { width: 12em; padding: 0 1em; margin-right: 1em; }
+
+      #controlpanel .breakbelow td { padding-bottom: 1em; }
+
+      .diffuninteresting           { color:#aaa; font-size: 80%; }
+
+      #status                      { color: #04a; height: 12pt; vertical-align: top; }
+      #status.active               { color: #0a4; font-weight: bold; height: 12pt; vertical-align: top; }
+
+      #mdiff, #cdiff               { width: 7em; }
+
+      #curr, #cmax, #ctime, #apoly, #avert,
+      #generation                  { color: #008; }
+      #KillPerGen                  { color: #800; }
+      #SurvivePerGen               { color: #080; }
+
+      #curr, #cmax, #generation, #ctime, #apoly, #avert,
+      #KillPerGen, #SurvivePerGen  { font-weight: bold; }
+
+
+    </style>
+
+    <script type="text/javascript" src="canvolver.js"></script>
+
+    <script type="text/javascript">
+
+
+
+
+
+      function drawDefaultImage() {
+//      document.getElementById('BaseGraphic').src='MorganFreemanQuote.png';
+        document.getElementById('BaseGraphic').src='MorganFreeman.png';
+//      document.getElementById('BaseGraphic').src='MorganFairchild.png';
+//      document.getElementById('BaseGraphic').src='JPMorgan.png';
+//      document.getElementById('BaseGraphic').src='MikeMel.png';
+//      document.getElementById('BaseGraphic').src='JeffJoelleShoulder.png';
+//      document.getElementById('BaseGraphic').src='cuddy.png';
+      }
+
+
+
+
+
+      function workCycle() {
+
+        if (!(CV.checkIsRunning())) {
+          if (document.getElementById('workingCheck').checked) {
+            CV.run();
+          }
+        }
+
+        setTimeout(workCycle, 0);
+
+      }
+
+
+
+
+
+      function formatScoreHeaderPct(DiffNum) {
+
+        if ((DiffNum == undefined) || (DiffNum == '-')) { return ''; }
+
+        var Diff        = (DiffNum * 100).toString();
+
+        var Interesting = Diff.substring(0,4);
+        var Mantissa    = Diff.substring(4,8);
+
+        return '<b>' + Interesting.toString() + '</b><span class="diffuninteresting">' + Mantissa.toString() + '</span> %';
+
+      }
+
+
+
+
+
+      function formatScoreDiff(DiffNum) {
+
+        var Diff        = DiffNum.toString();
+
+        var Front       = Diff.substring(0,2);
+        var Interesting = Diff.substring(2,5);
+        var Mantissa    = Diff.substring(5,12);
+
+        return '<span class="diffuninteresting">' + Front.toString() + '</span><b>' + Interesting.toString() + '</b><span class="diffuninteresting">' + Mantissa.toString() + '</span>';
+
+      }
+
+
+
+
+
+      function setStatus(To, Active) {
+        document.getElementById('status').innerHTML = To;
+        document.getElementById('status').className = (Active === true)? 'active' : '';
+      }
+
+
+
+
+
+      function setConsoleBlock(shouldBlock) {
+
+        document.getElementById('onegen').disabled = shouldBlock;
+        document.getElementById('reset').disabled  = shouldBlock;
+
+      }
+
+
+
+
+
+      function setConsoleDiffs(Generation, Curr, Max, Diff, CDiff, Time, AvgPolys, AvgVertices) {
+
+        document.getElementById('generation').innerHTML      = Generation.toString();
+        document.getElementById('cmax').innerHTML            = Max.toString();
+        document.getElementById('curr').innerHTML            = (Curr+1).toString();
+        document.getElementById('mdiff').innerHTML           = formatScoreDiff(Diff);
+        document.getElementById('cdiff').innerHTML           = formatScoreDiff(CDiff);
+        document.getElementById('ctime').innerHTML           = Time;
+        document.getElementById('apoly').innerHTML           = AvgPolys;
+        document.getElementById('avert').innerHTML           = AvgVertices;
+        document.getElementById('headererrorrate').innerHTML = formatScoreHeaderPct(Diff);
+
+      }
+
+
+
+
+
+      function unsetConstantGeneration() {
+        // todo turn constant generation off
+      }
+
+
+
+
+
+      var CV;
+
+      function setup() {
+
+      // todo comeback get the timing stuff fixed
+
+        drawDefaultImage();
+
+        setTimeout(function() {
+
+          CV = new Canvolver(
+            setConsoleDiffs,
+            setConsoleBlock,
+            setStatus,
+            unsetConstantGeneration,
+            document.getElementById('BaseGraphic'),
+            document.getElementById('PixelCanvas'),
+            document.getElementById('CurrentCanvas'),
+            document.getElementById('WinnerCanvas'),
+            document.getElementById('GenesPerGen'),
+            document.getElementById('NoisePerGen'),
+            document.getElementById('MutatePerGen'),
+            document.getElementById('BonusMutates'),
+            document.getElementById('AutumnSpawn'),
+            document.getElementById('SpringSpawn')
+          );
+
+          setStatus('Idle');
+
+          updateUiMath();
+          workCycle();
+
+        }, 200);
+
+      }
+
+
+
+
+
+      function reset() {
+        CV.reset();
+      }
+
+
+
+
+
+      function updateUiMath() {
+
+        var GPG     = parseInt(document.getElementById('GenesPerGen').value,  10);
+        var NPG     = parseInt(document.getElementById('NoisePerGen').value,  10);
+        var MPG     = parseInt(document.getElementById('MutatePerGen').value, 10);
+        var BMG     = parseInt(document.getElementById('BonusMutates').value, 10);
+        var aSPG    = parseInt(document.getElementById('AutumnSpawn').value,  10);
+        var sSPG    = parseInt(document.getElementById('SpringSpawn').value,  10);
+
+        var Survive = GPG - (NPG + MPG + BMG + aSPG + sSPG);
+
+        document.getElementById('KillPerGen').innerHTML                = (GPG - Survive).toString();
+
+        document.getElementById('SurvivePerGen').innerHTML             = Survive.toString() + ((Survive > 0)? (''):(' [Too small!]'));
+        document.getElementById('SurvivePerGen').style.backgroundColor = (Survive > 0)? 'white' : '#fcc';
+
+      }
+
+
+
+
+
+    </script>
+
+  </head>
+
+  <body onload="setup();">
+
+    <div id="imgframe"><div class="framelabel">Original</div><canvas id="PixelCanvas">This browser does not support &lt;canvas&gt;</canvas><img id="BaseGraphic" style="position: absolute; left: 0; background-color: white;"/></div>
+    <div id="cloneframe2"><div class="framelabel">Best so far</div><canvas id="CurrentCanvas">This browser does not support &lt;canvas&gt;</canvas></div>
+    <div id="breedframe2"><div class="framelabel">Error rate <span id="headererrorrate"></span></div><canvas id="BreedCanvas1">This browser does not support &lt;canvas&gt;</canvas></div><br/>
+
+    <div id="controlframe">
+      <div class="framelabel">Controls</div>
+      <div id="controls">
+        <div id="controlpanel">
+          <div id="statusline">Status: <span id="status"></span></div>
+          <table>
+            <tr><td>Generation</td><td class="rcol" id="generation"></td><td>Working on</td><td class="rcol" id="curr"></td></tr>
+            <tr><td>Size of group</td><td class="rcol" id="cmax"></td><td>Current difference</td><td class="rcol" id="cdiff"></td></tr>
+            <tr class="breakbelow"><td>Elapsed</td><td class="rcol" id="ctime"></td><td>Best difference</td><td class="rcol" id="mdiff"></td></tr>
+            <tr class="breakbelow"><td>Poly count</td><td class="rcol" id="apoly"></td><td>Vertex count</td><td class="rcol" id="avert"></td></tr>
+            <tr><td colspan="2"><input id="onegen" type="button" onclick="CV.run();" value="Run one generation"/></td><td>Constant generation</td><td class="rcol"><input type="checkbox" id="workingCheck"></td></tr>
+            <tr class="breakbelow"><td colspan="2"><input id="reset" type="button" onclick="reset();" value="Reset the evolver"/></td><td>Realtime (non-blocking)</td><td class="rcol"><input type="checkbox" checked="checked" id="showRealtime"></td></tr>
+            <tr><td>Genomes per gen</td><td class="rcol"><input onkeyup="updateUiMath();" id="GenesPerGen" value="6"/></td><td><strike>Noise per gen</strike></td><td class="rcol"><input onkeyup="updateUiMath();" id="NoisePerGen" value="0"/></td></tr>
+            <tr><td><strike>Autumn spawn per gen</strike></td><td class="rcol"><input onkeyup="updateUiMath();" id="AutumnSpawn" value="0"/></td><td><strike>Spring spawn per gen</strike></td><td class="rcol"><input onkeyup="updateUiMath();" id="SpringSpawn" value="0"/></td></tr>
+            <tr class="breakbelow"><td>Mutations per gen</td><td class="rcol"><input onkeyup="updateUiMath();" id="MutatePerGen" value="5"/></td><td>Bonus mut.s per gen</td><td class="rcol"><input onkeyup="updateUiMath();" id="BonusMutates" value="0"/></td></tr>
+            <tr><td>Kills per gen</td><td class="rcol"><span id="KillPerGen"></span></td><td>Survivors per gen</td><td class="rcol"><span id="SurvivePerGen"></span></td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div id="cloneframe"><div class="framelabel">Current</div><canvas id="WinnerCanvas">This browser does not support &lt;canvas&gt;</canvas></div>
+    <div id="breedframe2"><div class="framelabel">Dump Best <input type="button" onclick="CV.dump();" value="Now"/></div><div id="BreedCanvas2"><textarea id="textdump" style="width:96%; height:98%; display:block; margin:0 0 0 1.5%;"></textarea></div></div>
+
+  </body>
+
+</html>
