@@ -38,11 +38,26 @@ And a million (Dr. Evil finger):
 
 ![](/screens/CuddyEx.png)
 
-Because this is javascript, it's extremely fast.  (checks notes)  Wait, no.  
+Because this is javascript, it's extremely fast.  (checks notes)  Wait, no.
 
 Also I have applied approximately zero careful effort to this.  So you can expect a display quality piece to take 30-40 minutes on a quad-2.4.  Chrome's canvas implementation is dramatically faster than the competition at time of writing, and will do the work as such much much faster.
+
+
+
+
 
 Hey.  `:|`  I looked at the source. `>:(`
 -----------------------------------------
 
 I mean, let's be direct.  This is not good code.  I was pretty drunk the night I wrote this.  I just don't care enough to fix it.
+
+
+
+
+
+Polemic :neckbeard:
+-------------------
+
+`canvolver` is MIT licensed, because viral licenses and newspeak language modification are evil.  Free is ***only*** free when it's free for everyone.
+
+... but you should not want this code.  Not even in jest.
