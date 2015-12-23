@@ -493,16 +493,7 @@ function Canvolver(UseUpdateCall, UseUpdateBlock, UseUpdateStatus, UseUnsetConst
 
 
     var setRandomPixel = function() {
-
-      x = parseInt(rnd(uWidth));
-      y = parseInt(rnd(uHeight));
-
-      r = parseInt(rnd(256));
-      g = parseInt(rnd(256));
-      b = parseInt(rnd(256));
-
-      setPixel(x, y, r, g, b, 0xff);            // 0xff opaque
-
+      setPixel(rnd(uWidth), rnd(uHeight), rnd(256), rnd(256), rnd(256), 0xff);            // 0xff opaque
     }
 
 
