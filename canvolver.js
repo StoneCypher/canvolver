@@ -68,10 +68,12 @@ function Canvolver(UseUpdateCall, UseUpdateBlock, UseUpdateStatus, UseUnsetConst
 
       index = (x + y * imageData.width) * 4;
 
-      tgt.data[index+0] = Math.max(0, Math.min(255, Math.abs(Math.floor(src1.data[index+0] - src2.data[index+0]))));
-      tgt.data[index+1] = Math.max(0, Math.min(255, Math.abs(Math.floor(src1.data[index+1] - src2.data[index+1]))));
-      tgt.data[index+2] = Math.max(0, Math.min(255, Math.abs(Math.floor(src1.data[index+2] - src2.data[index+2]))));
-      tgt.data[index+3] = 255;
+      var tdata = tgt.data, s1data = src1.data, s2data = src2.data;
+
+      tdata[index+0] = Math.max(0, Math.min(255, Math.abs(Math.floor(s1data[index+0] - s2data[index+0]))));
+      tdata[index+1] = Math.max(0, Math.min(255, Math.abs(Math.floor(s1data[index+1] - s2data[index+1]))));
+      tdata[index+2] = Math.max(0, Math.min(255, Math.abs(Math.floor(s1data[index+2] - s2data[index+2]))));
+      tdata[index+3] = 255;
 
     }
 
@@ -92,14 +94,14 @@ function Canvolver(UseUpdateCall, UseUpdateBlock, UseUpdateStatus, UseUnsetConst
 
       for (var w=0; w<uWidth; ++w) {
         for (var h=0; h<uHeight; ++h) {
-  
+
           diffPixel(iD1, iD2, iDT, w, h);
-  
+
         }
       }
-  
+
       ctxT.putImageData(iDT, 0,0);
-  
+
     }
 
 
@@ -1104,7 +1106,7 @@ function Canvolver(UseUpdateCall, UseUpdateBlock, UseUpdateStatus, UseUnsetConst
 
 
     this.dump = function() {
-     
+
       document.getElementById('textdump').value = JSON.stringify(LastGen);
 
     }
