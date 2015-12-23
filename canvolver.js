@@ -460,17 +460,14 @@ function Canvolver(UseUpdateCall, UseUpdateBlock, UseUpdateStatus, UseUnsetConst
 
       index = (x + (y*imageData.width)) * 4;
 
-      var r1 = novelImageData.data[index+0];
-      var g1 = novelImageData.data[index+1];
-      var b1 = novelImageData.data[index+2];
-      var a1 = novelImageData.data[index+3];
+      var niData = novelImageData.data,
+          siData = srcImageData.data;
 
-      var r2 = srcImageData.data[index+0];
-      var g2 = srcImageData.data[index+1];
-      var b2 = srcImageData.data[index+2];
-      var a2 = srcImageData.data[index+3];
-
-      return (Math.abs(r1-r2) + Math.abs(g1-g2) + Math.abs(b1-b2) + Math.abs(a1-a2)) / (255*4);
+      return (Math.abs(niData[index+0]-siData[index+0])
+            + Math.abs(niData[index+1]-siData[index+1])
+            + Math.abs(niData[index+2]-siData[index+2])
+            + Math.abs(niData[index+3]-siData[index+3])
+      ) / (255*4);
 
     }
 
