@@ -1,0 +1,23 @@
+language: node_js
+sudo: false
+notifications:
+  irc:
+    channels:
+      - "irc.blitzed.org#stonecypher-builds"
+    template:
+      - "%{repository} %{build_number} (%{commit}) : %{message} %{foo} "
+  recipients:
+    - stonecypher@gmail.com
+node_js:
+  - "5.1"
+  - "5.0"
+  - "4"
+  - "4.2"
+  - "4.1"
+  - "4.0"
+  - "0.12"
+  - "0.11"
+  - "0.10"
+  - "iojs"
+before_script: npm install
+script: npm test
