@@ -1,6 +1,12 @@
 canvolver
 =========
 
+## tl,dr:
+
+[Go here and click "constant generation"](http://stonecypher.github.io/canvolver/canvolver.html)
+
+## what?
+
 Man I was bored, a long time ago, so I created a low quality canvas polygon evolver.  It does fairly dumb and neat crap like this:
 
 ![](/screens/MorganFreeman.png)
